@@ -4,7 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,6 +17,7 @@ public class URLBuilder {
 
     private final String basicUrl;
     private final Map<String,Object> params = new LinkedHashMap<>();
+    private final List<String> parts = new ArrayList<>();
 
     public URLBuilder(String basicUrl) {
         this.basicUrl = basicUrl;
@@ -23,6 +26,13 @@ public class URLBuilder {
     public URLBuilder p(String name, String value) {
         if (value != null && !value.isEmpty()) {
             params.put(name, value);
+        }
+        return this;
+    }
+
+    public URLBuilder a(String addressPart) {
+        if (addressPart != null && !addressPart.isEmpty()) {
+            parts.add(addressPart);
         }
         return this;
     }
@@ -38,13 +48,19 @@ public class URLBuilder {
     }
 
     public String buildString() {
-        if (params.isEmpty()) {
-            return basicUrl;
-        } else {
-            StringBuilder sb = new StringBuilder(basicUrl);
-            sb.append("?").append(getParameterString());
-            return sb.toString();
+        StringBuilder result = new StringBuilder(basicUrl);
+        if (!parts.isEmpty()) {
+            for (String part : parts) {
+                if (result.charAt(result.length()-1) != '/') {
+                    result.append("/");
+                }
+                result.append(part);
+            }
         }
+        if (!params.isEmpty()) {
+            result.append("?").append(getParameterString());
+        }
+        return result.toString();
     }
 
     public String getParameterString() {

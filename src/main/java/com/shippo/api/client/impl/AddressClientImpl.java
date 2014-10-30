@@ -5,11 +5,9 @@ import com.shippo.api.model.*;
 import com.shippo.api.util.StringUtils;
 import com.shippo.api.util.URLBuilder;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class AddressClientImpl extends BasicClient implements AddressClient  {
@@ -38,17 +36,10 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
                 .buildString();
 
         String json = getResponseWithCredentialsGet(url);
-        System.out.println(json);
 
-        JsonNode root = new ObjectMapper().readTree(json);
+        JsonNode root = parseJson(json);
         JsonNode resultsNode  = root.get("results");
-        Iterator<JsonNode> iter = resultsNode.getElements();
-        ArrayList<JsonNode> childNodes = new ArrayList<>();
-        while (iter.hasNext()) {
-            JsonNode n = iter.next();
-            childNodes.add(n);
-        }
-
+        ArrayList<JsonNode> childNodes = getArrayElements(root.get("results"));
         AddressResponse response = new AddressResponse();
         JsonNode first = childNodes.get(0);
         setAddressResponseFields(first, response);
@@ -57,8 +48,26 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
     }
 
     @Override
-    public AddressResponse get(String id) {
-        return null;
+    public AddressResponse get(String id) throws Exception {
+        String url = new URLBuilder(BASIC_URL).a(id).buildString();
+
+        String json = getResponseWithCredentialsGet(url);
+        JsonNode root = parseJson(json);
+        AddressResponse response = new AddressResponse();
+        setAddressResponseFields(root, response);
+
+        return response;
+    }
+
+    @Override
+    public AddressResponse validate(String id) throws Exception {
+        String url = new URLBuilder(BASIC_URL).a(id).a("validate/").buildString();
+        String json = getResponseWithCredentialsGet(url);
+        JsonNode root = parseJson(json);
+        AddressResponse response = new AddressResponse();
+        setAddressResponseFields(root, response);
+
+        return response;
     }
 
     @Override
@@ -66,9 +75,15 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
         String url = new URLBuilder(BASIC_URL).buildString();
 
         String json = getResponseWithCredentialsGet(url);
-        System.out.println(json);
-
-        return null;
+        JsonNode root = parseJson(json);
+        ArrayList<JsonNode> childNodes = getArrayElements(root.get("results"));
+        List<AddressResponse> list = new ArrayList<>(childNodes.size());
+        for (JsonNode e : childNodes) {
+            AddressResponse addressResponse = new AddressResponse();
+            setAddressResponseFields(e,addressResponse);
+            list.add(addressResponse);
+        }
+        return list;
     }
 
     private static void setAddressResponseFields(JsonNode node, AddressResponse response) throws ParseException {
@@ -88,7 +103,7 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
         o.setStreet2(StringUtils.itrim(node.get("street2").asText()));
         o.setCity(StringUtils.itrim(node.get("city").asText()));
         o.setState(StringUtils.itrim(node.get("state").asText()));
-        o.setCountry(CountryCodeEnum.fromString(node.get("object_purpose").asText()));
+        o.setCountry(CountryCodeEnum.fromString(node.get("country").asText()));
         o.setPhone(StringUtils.itrim(node.get("phone").asText()));
         o.setEmail(StringUtils.itrim(node.get("email").asText()));
         o.setMetadata(StringUtils.itrim(node.get("metadata").asText()));

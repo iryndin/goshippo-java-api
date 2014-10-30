@@ -22,6 +22,20 @@ public class AddressClientImplTest {
         client.listAll();
     }
 
+    @Test
+    public void get() throws Exception {
+        AddressClientImpl client = new AddressClientImpl(credentials);
+        AddressResponse addressResponse = client.get("8ab57c31f77240d194218d6beb302ba7");
+        System.out.println(addressResponse);
+    }
+
+    @Test
+    public void validate() throws Exception {
+        AddressClientImpl client = new AddressClientImpl(credentials);
+        AddressResponse addressResponse = client.validate("8ab57c31f77240d194218d6beb302ba7");
+        System.out.println(addressResponse);
+    }
+
     public static Address createAddress() {
         Address a = new Address();
         a.setName("Laura Behrens Wu");

@@ -7,15 +7,19 @@ import com.shippo.api.model.BasicResponse;
 import com.shippo.api.model.Credentials;
 import com.shippo.api.model.ObjectState;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 public class BasicClient {
     private final Credentials credentials;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public BasicClient(Credentials credentials) {
         this.credentials = credentials;
@@ -70,5 +74,20 @@ public class BasicClient {
         o.setUpdateDate(updateDate);
         o.setId(objectId);
         o.setOwner(objectOwner);
+    }
+
+    protected JsonNode parseJson(String json) throws IOException {
+        JsonNode root = objectMapper.readTree(json);
+        return root;
+    }
+
+    protected ArrayList<JsonNode> getArrayElements(JsonNode arrayNode) {
+        Iterator<JsonNode> iter = arrayNode.getElements();
+        ArrayList<JsonNode> arrayNodeList = new ArrayList<>();
+        while (iter.hasNext()) {
+            JsonNode n = iter.next();
+            arrayNodeList.add(n);
+        }
+        return arrayNodeList;
     }
 }

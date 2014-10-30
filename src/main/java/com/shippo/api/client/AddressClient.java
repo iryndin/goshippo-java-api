@@ -8,6 +8,7 @@ import java.util.List;
 public interface AddressClient {
 
     AddressResponse create(Address address) throws Exception;
-    AddressResponse get(String id);
+    AddressResponse get(String id) throws Exception;
+    AddressResponse validate(String id) throws Exception;
     List<AddressResponse> listAll() throws Exception;
 }
