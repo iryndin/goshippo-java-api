@@ -14,12 +14,8 @@ public class AddressResponse extends BasicObjectResponse<Address> {
     @Override
     public String toString() {
         return "AddressResponse{" +
+                basicResponseToString() +
                 "objectSource='" + objectSource + '\'' +
-                ", objectState=" + getObjectState() +
-                ", createDate=" + getCreateDate() +
-                ", updateDate=" + getUpdateDate() +
-                ", id='" + getId() + '\'' +
-                ", owner='" + getOwner() + '\'' +
                 ", object=" + getObject() +
                 "} ";
     }

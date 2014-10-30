@@ -30,6 +30,20 @@ public class URLBuilder {
         return this;
     }
 
+    public URLBuilder p(String name, Enum<? extends Enum> value) {
+        if (value != null) {
+            params.put(name, value.name());
+        }
+        return this;
+    }
+
+    public URLBuilder p(String name, Number n) {
+        if (n != null) {
+            params.put(name, n.toString());
+        }
+        return this;
+    }
+
     public URLBuilder a(String addressPart) {
         if (addressPart != null && !addressPart.isEmpty()) {
             parts.add(addressPart);

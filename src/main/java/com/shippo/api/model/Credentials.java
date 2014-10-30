@@ -10,6 +10,11 @@ public class Credentials {
         this.password = password;
     }
 
+    public Credentials(Credentials credentials) {
+        this.username = credentials.getUsername();
+        this.password = credentials.getPassword();
+    }
+
     public String getUsername() {
         return username;
     }

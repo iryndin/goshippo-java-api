@@ -22,23 +22,23 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
     public AddressResponse create(Address address) throws Exception {
         String url = new URLBuilder(BASIC_URL)
                 .p("name", address.getName())
-                .p("object_purpose", address.getObjectPurpose().name())
+                .p("object_purpose", address.getObjectPurpose())
                 .p("company", address.getCompany())
                 .p("street1", address.getStreet1())
                 .p("street_no", address.getStreetNo())
                 .p("street2", address.getStreet2())
                 .p("city", address.getCity())
                 .p("state", address.getState())
-                .p("country", address.getCountry().name())
+                .p("country", address.getCountry())
                 .p("phone", address.getPhone())
                 .p("email", address.getEmail())
                 .p("metadata", address.getMetadata())
                 .buildString();
 
         String json = getResponseWithCredentialsGet(url);
+        System.out.println(json);
 
         JsonNode root = parseJson(json);
-        JsonNode resultsNode  = root.get("results");
         ArrayList<JsonNode> childNodes = getArrayElements(root.get("results"));
         AddressResponse response = new AddressResponse();
         JsonNode first = childNodes.get(0);

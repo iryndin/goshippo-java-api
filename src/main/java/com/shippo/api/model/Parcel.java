@@ -75,4 +75,18 @@ public class Parcel {
     public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
+
+    @Override
+    public String toString() {
+        return "Parcel{" +
+                "length=" + length +
+                ", width=" + width +
+                ", height=" + height +
+                ", distanceUnit=" + distanceUnit +
+                ", weight=" + weight +
+                ", massUnit=" + massUnit +
+                ", template='" + template + '\'' +
+                ", metadata='" + metadata + '\'' +
+                '}';
+    }
 }

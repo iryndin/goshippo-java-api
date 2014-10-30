@@ -51,4 +51,14 @@ public class BasicResponse {
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+    public String basicResponseToString() {
+        return
+                "objectState=" + objectState +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", id='" + id + '\'' +
+                ", owner='" + owner + '\'' +
+                '}';
+    }
 }
