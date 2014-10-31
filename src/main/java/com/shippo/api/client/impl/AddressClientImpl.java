@@ -2,6 +2,7 @@ package com.shippo.api.client.impl;
 
 import com.shippo.api.client.AddressClient;
 import com.shippo.api.model.*;
+import com.shippo.api.util.ParamsHolder;
 import com.shippo.api.util.StringUtils;
 import com.shippo.api.util.URLBuilder;
 import org.codehaus.jackson.JsonNode;
@@ -20,7 +21,7 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
 
     @Override
     public AddressResponse create(Address address) throws Exception {
-        String url = new URLBuilder(BASIC_URL)
+        ParamsHolder paramsHolder = new ParamsHolder()
                 .p("name", address.getName())
                 .p("object_purpose", address.getObjectPurpose())
                 .p("company", address.getCompany())
@@ -30,19 +31,16 @@ public class AddressClientImpl extends BasicClient implements AddressClient  {
                 .p("city", address.getCity())
                 .p("state", address.getState())
                 .p("country", address.getCountry())
+                .p("zip", address.getZip())
                 .p("phone", address.getPhone())
                 .p("email", address.getEmail())
-                .p("metadata", address.getMetadata())
-                .buildString();
+                .p("metadata", address.getMetadata());
 
-        String json = getResponseWithCredentialsGet(url);
-        System.out.println(json);
+        String json = getResponseWithCredentialsPost(BASIC_URL, paramsHolder);
 
         JsonNode root = parseJson(json);
-        ArrayList<JsonNode> childNodes = getArrayElements(root.get("results"));
         AddressResponse response = new AddressResponse();
-        JsonNode first = childNodes.get(0);
-        setAddressResponseFields(first, response);
+        setAddressResponseFields(root, response);
 
         return response;
     }

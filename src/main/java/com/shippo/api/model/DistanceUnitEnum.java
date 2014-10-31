@@ -1,7 +1,7 @@
 package com.shippo.api.model;
 
 public enum DistanceUnitEnum {
-    CM, IN, FT, MM, M, YD;
+    cm, in, ft, mm, m, yd;
 
     public static DistanceUnitEnum fromString(final String s) {
         if (s != null) {

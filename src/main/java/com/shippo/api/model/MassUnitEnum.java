@@ -1,7 +1,7 @@
 package com.shippo.api.model;
 
 public enum MassUnitEnum {
-    G, OZ, LB, KG;
+    g, oz, lb, kg;
 
     public static MassUnitEnum fromString(final String s) {
         if (s != null) {

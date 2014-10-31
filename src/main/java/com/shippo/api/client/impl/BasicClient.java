@@ -6,6 +6,7 @@ import com.ning.http.client.Response;
 import com.shippo.api.model.BasicResponse;
 import com.shippo.api.model.Credentials;
 import com.shippo.api.model.ObjectState;
+import com.shippo.api.util.ParamsHolder;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class BasicClient {
@@ -25,7 +27,7 @@ public class BasicClient {
         this.credentials = credentials;
     }
 
-    public String getResponseWithCredentialsPost(String surl, String urlParameters) throws IOException, ExecutionException, InterruptedException {
+    public String getResponseWithCredentialsPost(String surl, ParamsHolder params) throws IOException, ExecutionException, InterruptedException {
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         Realm realm = new Realm.RealmBuilder()
                 .setPrincipal(credentials.getUsername())
@@ -33,8 +35,15 @@ public class BasicClient {
                 .setUsePreemptiveAuth(true)
                 .setScheme(Realm.AuthScheme.BASIC)
                 .build();
-        Response resp = asyncHttpClient.preparePost(surl).setRealm(realm).execute().get();
+        Response resp = setParams(asyncHttpClient.preparePost(surl), params).setRealm(realm).execute().get();
         return resp.getResponseBody();
+    }
+
+    private static AsyncHttpClient.BoundRequestBuilder setParams(AsyncHttpClient.BoundRequestBuilder b, ParamsHolder params) {
+        for (Map.Entry<String, Object> e : params.set()) {
+            b = b.addParameter(e.getKey(), e.getValue().toString());
+        }
+        return b;
     }
 
     public String getResponseWithCredentialsGet(String surl) throws IOException, ExecutionException, InterruptedException {
